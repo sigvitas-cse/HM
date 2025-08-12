@@ -80,7 +80,7 @@ const EmployeeManagement = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Employee Management</h1>
+      <h1 className="text-3xl font-bold mb-4 text-white">Employee Management</h1>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -89,7 +89,7 @@ const EmployeeManagement = () => {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -99,7 +99,7 @@ const EmployeeManagement = () => {
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required={!editingId}
             />
           </div>
@@ -109,7 +109,7 @@ const EmployeeManagement = () => {
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -118,7 +118,7 @@ const EmployeeManagement = () => {
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
             >
               <option value="Employee">Employee</option>
               <option value="HR">HR</option>
@@ -131,7 +131,7 @@ const EmployeeManagement = () => {
               type="text"
               value={formData.employeeId}
               onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -141,7 +141,7 @@ const EmployeeManagement = () => {
               type="text"
               value={formData.department}
               onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
             />
           </div>
           <div>
@@ -150,7 +150,7 @@ const EmployeeManagement = () => {
               type="text"
               value={formData.designation}
               onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
             />
           </div>
           <div>
@@ -159,7 +159,7 @@ const EmployeeManagement = () => {
               type="text"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
             />
           </div>
           <div className="col-span-2">
@@ -167,7 +167,7 @@ const EmployeeManagement = () => {
             <textarea
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
             />
           </div>
         </div>
@@ -189,7 +189,7 @@ const EmployeeManagement = () => {
       </form>
       <h2 className="text-2xl font-semibold mb-4">Employee List</h2>
       <div className="bg-white p-4 rounded shadow">
-        <table className="w-full">
+        <table className="w-full text-gray-600">
           <thead>
             <tr className="bg-gray-100">
               <th className="p-2 text-left">Name</th>

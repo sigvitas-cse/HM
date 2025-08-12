@@ -26,13 +26,13 @@ const Attendance = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Attendance History</h2>
+      <h2 className="text-2xl font-bold mb-4 text-white">Attendance History</h2>
       <div className="bg-white p-6 rounded shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Attendance for {user?.name} ({user?.employeeId})</h3>
+        <h3 className="text-lg font-semibold mb-2 text-gray-800">Attendance for {user?.name} ({user?.employeeId})</h3>
         {attendance.length === 0 ? (
-          <p>No attendance records found.</p>
+          <p className='text-gray-800'>No attendance records found.</p>
         ) : (
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse text-gray-800">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border p-2">Date</th>

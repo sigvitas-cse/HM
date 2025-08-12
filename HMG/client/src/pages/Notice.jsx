@@ -88,7 +88,7 @@ const Notice = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Notice Board</h1>
+      <h1 className="text-3xl font-bold mb-4 text-white">Notice Board</h1>
       {(user.role === 'Admin' || user.role === 'HR') && (
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
           <div className="grid grid-cols-1 gap-4">
@@ -98,7 +98,7 @@ const Notice = () => {
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded block text-gray-500"
                 required
               />
             </div>
@@ -107,7 +107,7 @@ const Notice = () => {
               <textarea
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
                 required
               />
             </div>
@@ -122,7 +122,7 @@ const Notice = () => {
                     targetUsers: Array.from(e.target.selectedOptions, (option) => option.value),
                   })
                 }
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
               >
                 {employees.map((emp) => (
                   <option key={emp._id} value={emp._id}>
@@ -149,7 +149,7 @@ const Notice = () => {
           )}
         </form>
       )}
-      <h2 className="text-2xl font-semibold mb-4">Notices</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-white">Notices</h2>
       <div className="bg-white p-4 rounded shadow">
         {notices.map((notice) => (
           <div key={notice._id} className="border-b p-4">

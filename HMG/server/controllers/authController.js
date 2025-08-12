@@ -146,7 +146,10 @@ const logout = async (req, res) => {
       return res.status(400).json({ message: 'No active login session found' });
     }
     attendance.logoutTime = new Date();
-    await checkWorkHours(attendance, req.user);
+    await attendance.save();
+
+    // await checkWorkHours(attendance, req.user); //this will send email
+
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('Logout error:', error.message, error.stack);

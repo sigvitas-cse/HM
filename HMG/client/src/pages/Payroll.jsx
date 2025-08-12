@@ -94,7 +94,7 @@ const Payroll = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Payroll Management</h1>
+      <h1 className="text-3xl font-bold mb-4 text-white">Payroll Management</h1>
       {(user.role === 'Admin' || user.role === 'HR') && (
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -103,7 +103,7 @@ const Payroll = () => {
               <select
                 value={formData.userId}
                 onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
                 required
               >
                 <option value="">Select Employee</option>
@@ -120,7 +120,7 @@ const Payroll = () => {
                 type="number"
                 value={formData.salary}
                 onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
                 required
               />
             </div>
@@ -130,7 +130,7 @@ const Payroll = () => {
                 type="number"
                 value={formData.deductions}
                 onChange={(e) => setFormData({ ...formData, deductions: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
               />
             </div>
             <div>
@@ -139,7 +139,7 @@ const Payroll = () => {
                 type="date"
                 value={formData.paymentDate}
                 onChange={(e) => setFormData({ ...formData, paymentDate: e.target.value })}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-gray-500"
                 required
               />
             </div>
@@ -161,9 +161,9 @@ const Payroll = () => {
           )}
         </form>
       )}
-      <h2 className="text-2xl font-semibold mb-4">Payroll Records</h2>
+      <h2 className="text-2xl font-semibold mb-4 text-white">Payroll Records</h2>
       <div className="bg-white p-4 rounded shadow">
-        <table className="w-full">
+        <table className="w-full text-gray-800">
           <thead>
             <tr className="bg-gray-100">
               <th className="p-2 text-left">Employee</th>

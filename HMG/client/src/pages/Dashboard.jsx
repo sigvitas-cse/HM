@@ -13,16 +13,32 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        await logout(); // from AuthContext — clears local storage and context
+        toast.success(data.message || 'Logged out successfully');
+      } else {
+        toast.error(data.message || 'Logout failed');
+      }
     } catch (error) {
       toast.error('Logout failed');
     }
   };
 
+
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome, {user.name}</h2>
-      <div className="bg-white p-6 rounded shadow-md mb-6">
+      <h2 className="text-2xl font-bold mb-4 text-white">Welcome, {user.name}</h2>
+      <div className="bg-white p-6 rounded shadow-md mb-6 text-gray-800">
         <p><strong>Employee ID:</strong> {user.employeeId}</p>
         <p><strong>Role:</strong> {user.role}</p>
         <p><strong>Email:</strong> {user.email}</p>

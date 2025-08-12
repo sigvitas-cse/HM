@@ -50,9 +50,9 @@ const Leave = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Leave Management</h2>
+      <h2 className="text-2xl font-bold mb-4 text-white">Leave Management</h2>
       <div className="bg-white p-6 rounded shadow-md mb-6">
-        <h3 className="text-lg font-semibold mb-2">Apply for Leave</h3>
+        <h3 className="text-lg font-semibold mb-2 text-gray-800">Apply for Leave</h3>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 font-medium mb-2">Start Date</label>
@@ -60,7 +60,7 @@ const Leave = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -70,7 +70,7 @@ const Leave = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -79,7 +79,7 @@ const Leave = () => {
             <textarea
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded text-gray-600"
               required
             />
           </div>
@@ -89,13 +89,13 @@ const Leave = () => {
         </form>
       </div>
       <div className="bg-white p-6 rounded shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Leave History</h3>
+        <h3 className="text-lg font-semibold mb-2 text-gray-800">Leave History</h3>
         {leaves.length === 0 ? (
-          <p>No leave records found.</p>
+          <p className='text-gray-600'>No leave records found.</p>
         ) : (
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-100">
+                <tr className="bg-gray-100 text-gray-700">
                 <th className="border p-2">Start Date</th>
                 <th className="border p-2">End Date</th>
                 <th className="border p-2">Reason</th>

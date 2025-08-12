@@ -54,7 +54,7 @@ const Login = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Login</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center text-white">Login</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Email</label>
@@ -62,7 +62,7 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700"
             required
             placeholder="Enter your email"
           />
@@ -73,7 +73,7 @@ const Login = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700"
             required
             placeholder="Enter your password"
           />

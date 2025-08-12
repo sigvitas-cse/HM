@@ -46,7 +46,7 @@ const Register = () => {
 
   return (
     <div className="container mx-auto p-4 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Register</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center text-white">Register</h2>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">Name</label>
@@ -55,7 +55,8 @@ const Register = () => {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
+            placeholder="Enter your Name"
             required
           />
         </div>
@@ -66,7 +67,7 @@ const Register = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
             required
           />
         </div>
@@ -77,7 +78,7 @@ const Register = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
             required
           />
         </div>
@@ -87,7 +88,7 @@ const Register = () => {
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
             required
           >
             <option value="Employee">Employee</option>
@@ -102,7 +103,7 @@ const Register = () => {
             name="employeeId"
             value={formData.employeeId}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
             required
           />
         </div>
@@ -113,7 +114,7 @@ const Register = () => {
             name="department"
             value={formData.department}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
           />
         </div>
         <div className="mb-4">
@@ -123,7 +124,7 @@ const Register = () => {
             name="designation"
             value={formData.designation}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
           />
         </div>
         <div className="mb-4">
@@ -133,7 +134,7 @@ const Register = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
           />
         </div>
         <div className="mb-4">
@@ -143,7 +144,7 @@ const Register = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded text-gray-700"
           />
         </div>
         <button
