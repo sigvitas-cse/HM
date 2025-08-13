@@ -1,6 +1,6 @@
 // client/src/pages/Register.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Register = () => {
@@ -45,118 +45,192 @@ const Register = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center text-white">Register</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-            placeholder="Enter your Name"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Role</label>
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-            required
-          >
-            <option value="Employee">Employee</option>
-            <option value="HR">HR</option>
-            <option value="Admin">Admin</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Employee ID</label>
-          <input
-            type="text"
-            name="employeeId"
-            value={formData.employeeId}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Department</label>
-          <input
-            type="text"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Designation</label>
-          <input
-            type="text"
-            name="designation"
-            value={formData.designation}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="w-full p-2 border rounded text-gray-700"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full p-2 rounded text-white ${
-            loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
-          } transition-colors`}
+    <div className="min-h-screen bg-bg-dark flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl w-full bg-bg-darker bg-opacity-90 backdrop-blur-md rounded-xl shadow-lg p-6 sm:p-8 space-y-6">
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center text-primary font-medium hover:text-opacity-80 transition-colors duration-300"
         >
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-      </form>
+          <svg
+            className="w-5 h-5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back to Home
+        </Link>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-white animate-fade-in-down tracking-tight font-space-grotesk">
+            Register for HRMS
+          </h2>
+          <p className="mt-2 text-gray-400 font-share-tech">
+            Create your account to manage your workforce efficiently
+          </p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Role
+              </label>
+              <select
+                id="role"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                required
+              >
+                <option value="Employee" className="text-gray-800 bg-gray-600">Employee</option>
+                <option value="HR" className="text-gray-800 bg-gray-600">HR</option>
+                <option value="Admin" className="text-gray-800 bg-gray-600">Admin</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="employeeId" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Employee ID
+              </label>
+              <input
+                id="employeeId"
+                type="text"
+                name="employeeId"
+                value={formData.employeeId}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your employee ID"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="department" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Department
+              </label>
+              <input
+                id="department"
+                type="text"
+                name="department"
+                value={formData.department}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your department"
+              />
+            </div>
+            <div>
+              <label htmlFor="designation" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Designation
+              </label>
+              <input
+                id="designation"
+                type="text"
+                name="designation"
+                value={formData.designation}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your designation"
+              />
+            </div>
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your phone number"
+              />
+            </div>
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+                Address
+              </label>
+              <input
+                id="address"
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+                placeholder="Enter your address"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg font-semibold text-white transition-all duration-300 shadow-md ${
+              loading
+                ? 'bg-secondary/50 cursor-not-allowed'
+                : 'bg-secondary hover:bg-opacity-80'
+            }`}
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-400 mt-4 font-share-tech">
+          Already have an account?{' '}
+          <Link to="/login" className="text-primary hover:text-opacity-80 font-medium">
+            Login here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,14 +1,25 @@
-// client/src/pages/Dashboard.jsx
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useParams, Outlet, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  const { role, userId } = useParams();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!user || user.role.toLowerCase() !== role || user.employeeId !== userId) {
+      toast.error('Unauthorized access or invalid user');
+    }
+  }, [user, role, userId]);
 
   if (!user) {
-    return <div className="container mx-auto p-4">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-bg-dark flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="text-white font-space-grotesk animate-pulse">Loading...</div>
+      </div>
+    );
   }
 
   const handleLogout = async () => {
@@ -18,13 +29,13 @@ const Dashboard = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = await res.json();
       if (res.ok) {
-        await logout(); // from AuthContext — clears local storage and context
+        await logout(); // Clears local storage and context
         toast.success(data.message || 'Logged out successfully');
       } else {
         toast.error(data.message || 'Logout failed');
@@ -34,65 +45,139 @@ const Dashboard = () => {
     }
   };
 
+  const handleToggleSidebar = () => {
+    console.log('Toggling sidebar, new state:', !sidebarOpen); // Debug log
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleCloseSidebar = () => {
+    if (sidebarOpen) {
+      setSidebarOpen(false);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h2 className="text-2xl font-bold mb-4 text-white">Welcome, {user.name}</h2>
-      <div className="bg-white p-6 rounded shadow-md mb-6 text-gray-800">
-        <p><strong>Employee ID:</strong> {user.employeeId}</p>
-        <p><strong>Role:</strong> {user.role}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {(user.role === 'Admin' || user.role === 'HR' || user.role === 'Employee') && (
-          <>
-            <Link
-              to="/attendance"
-              className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-            >
-              Attendance
-            </Link>
-            <Link
-              to="/leaves"
-              className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-            >
-              Leave Management
-            </Link>
-            <Link
-              to="/payroll"
-              className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-            >
-              Payroll
-            </Link>
-            <Link
-              to="/notices"
-              className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-            >
-              Notices
-            </Link>
-            <Link
-              to="/holidays"
-              className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-            >
-              Holidays
-            </Link>
-          </>
-        )}
-        {user.role === 'Admin' && (
-          <Link
-            to="/admin/employees"
-            className="bg-blue-600 text-white p-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Employee Management
-          </Link>
-        )}
-      </div>
-      <button
-        onClick={handleLogout}
-        className="mt-6 bg-red-600 text-white p-2 rounded hover:bg-red-700 transition-colors"
+    <div className="min-h-screen bg-bg-dark text-gray-300 flex flex-row font-space-grotesk">
+      {/* Sidebar */}
+      <div
+        className="fixed inset-y-0 left-0 w-64 bg-bg-darker bg-opacity-95 backdrop-blur-md z-50 h-screen overflow-y-auto"
+        onClick={handleCloseSidebar} // Close on click outside (sidebar area)
       >
-        Logout
-      </button>
+        <div className="p-6 h-full flex flex-col border-r-2">
+          <h2 className="text-2xl font-bold text-white mb-6 font-space-grotesk">HRMS Dashboard</h2>
+          <nav className="flex-1">
+            <ul className="space-y-2">
+              {(user.role === 'Admin' || user.role === 'HR' || user.role === 'Employee') && (
+                <>
+                  <li>
+                    <Link
+                      to={`/${role}/${userId}/dashboard/attendance`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                      onClick={handleCloseSidebar}
+                    >
+                      <span className="ml-2">Attendance</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${role}/${userId}/dashboard/leaves`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                      onClick={handleCloseSidebar}
+                    >
+                      <span className="ml-2">Leave Management</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${role}/${userId}/dashboard/payroll`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                      onClick={handleCloseSidebar}
+                    >
+                      <span className="ml-2">Payroll</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${role}/${userId}/dashboard/notices`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                      onClick={handleCloseSidebar}
+                    >
+                      <span className="ml-2">Notices</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${role}/${userId}/dashboard/holidays`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                      onClick={handleCloseSidebar}
+                    >
+                      <span className="ml-2">Holidays</span>
+                    </Link>
+                  </li>
+                </>
+              )}
+              {user.role === 'Admin' && (
+                <li>
+                  <Link
+                    to="/admin/employees"
+                    className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
+                    onClick={handleCloseSidebar}
+                  >
+                    <span className="ml-2">Employee Management</span>
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </nav>
+          <button
+            onClick={handleCloseSidebar}
+            className="lg:hidden mt-4 bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 ml-64 pl-4">
+        {/* Header */}
+        <header className="sticky top-0 bg-bg-darker bg-opacity-90 backdrop-blur-md p-4 mx-6 rounded-lg mb-6 flex justify-between items-center border-b-4 z-40">
+          <button
+            onClick={handleToggleSidebar}
+            className="lg:hidden text-primary focus:outline-none"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+          </button>
+          <div className="text-white font-space-grotesk">
+            <p className="font-semibold">Welcome, {user.name}</p>
+            <p className="text-sm text-gray-400">Role: {user.role}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-opacity-80 transition-colors"
+          >
+            Logout
+          </button>
+        </header>
+
+        {/* Content Area */}
+        <main className="bg-bg-darker bg-opacity-90 p-0 rounded-lg shadow-lg h-[calc(95vh-64px)]">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

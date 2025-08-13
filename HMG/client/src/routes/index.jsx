@@ -18,69 +18,54 @@ const AppRoutes = () => (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route
-      path="/admin/dashboard"
+      path="/:role/:userId/dashboard"
       element={
-        <ProtectedRoute role="Admin">
+        <ProtectedRoute>
           <Dashboard />
         </ProtectedRoute>
       }
-    />
-    <Route
-      path="/hr/dashboard"
-      element={
-        <ProtectedRoute role="HR">
-          <Dashboard />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/employee/dashboard"
-      element={
-        <ProtectedRoute role="Employee">
-          <Dashboard />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/attendance"
-      element={
-        <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
-          <Attendance />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/leaves"
-      element={
-        <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
-          <Leave />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/payroll"
-      element={
-        <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
-          <Payroll />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/notices"
-      element={
-        <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
-          <Notice />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/holidays"
-      element={
-        <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
-          <Holiday />
-        </ProtectedRoute>
-      }
-    />
+    >
+      <Route
+        path="attendance"
+        element={
+          <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
+            <Attendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="leaves"
+        element={
+          <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
+            <Leave />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="payroll"
+        element={
+          <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
+            <Payroll />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="notices"
+        element={
+          <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
+            <Notice />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="holidays"
+        element={
+          <ProtectedRoute role={['Admin', 'HR', 'Employee']}>
+            <Holiday />
+          </ProtectedRoute>
+        }
+      />
+    </Route>
     <Route
       path="/admin/employees"
       element={
@@ -89,6 +74,8 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     />
+    {/* Fallback route for invalid URLs */}
+    <Route path="*" element={<Home />} />
   </Routes>
 );
 

@@ -1,15 +1,22 @@
-// server/controllers/attendanceController.js
 const Attendance = require('../models/Attendance');
 const User = require('../models/User');
 const { sendEmail } = require('../utils/email');
 
 const getAttendanceHistory = async (req, res) => {
+  console.log('Received request for /api/attendance/history, userId:', req.user._id); // Debug log
   try {
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ message: 'User not authenticated properly' });
+    }
     const history = await Attendance.find({ userId: req.user._id })
       .sort({ date: -1 })
       .populate('userId', 'name email');
+    if (!history.length) {
+      return res.status(200).json([]); // Return empty array with 200 if no records
+    }
     res.json(history);
   } catch (error) {
+    console.error('Error in getAttendanceHistory:', error);
     res.status(500).json({ message: 'Failed to fetch attendance history' });
   }
 };

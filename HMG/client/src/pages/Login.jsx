@@ -1,6 +1,6 @@
 // client/src/pages/Login.jsx
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
 
@@ -39,7 +39,8 @@ const Login = () => {
       const res = await login({ email, password, latitude, longitude, confirmOutside });
       console.log('Login response:', res); // Debug log
       toast.success('Login successful');
-      navigate(`/${res.user.role.toLowerCase()}/dashboard`);
+      // Redirect to dynamic dashboard URL using user role and employeeId
+      navigate(`/${res.user.role.toLowerCase()}/${res.user.employeeId}/dashboard`);
     } catch (error) {
       console.error('Login error:', error.response?.data, error);
       const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
@@ -53,52 +54,96 @@ const Login = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-md">
-      <h2 className="text-2xl font-bold mb-4 text-center text-white">Login</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700"
-            required
-            placeholder="Enter your email"
-          />
+    <div className="min-h-screen bg-bg-dark flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-bg-darker bg-opacity-90 backdrop-blur-md rounded-xl shadow-lg p-6 sm:p-8 space-y-6">
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center text-primary font-medium hover:text-opacity-80 transition-colors duration-300 font-space-grotesk"
+        >
+          <svg
+            className="w-5 h-5 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back to Home
+        </Link>
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-white animate-fade-in-down tracking-tight font-space-grotesk">
+            Login to HRMS
+          </h2>
+          <p className="mt-2 text-gray-400 font-share-tech">
+            Access your account to manage your workforce
+          </p>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-700"
-            required
-            placeholder="Enter your password"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="flex items-center">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-300 font-space-grotesk">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full p-3 border border-gray-600 rounded-lg text-white bg-transparent placeholder-gray-500 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-300"
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          <div className="flex items-center">
             <input
               type="checkbox"
               checked={confirmOutside}
               onChange={(e) => setConfirmOutside(e.target.checked)}
-              className="mr-2"
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-600 rounded"
             />
-            <span className="text-gray-700">Confirm login from outside office</span>
-          </label>
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full p-2 rounded text-white ${
-            loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-          } transition-colors`}
-        >
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+            <label htmlFor="confirmOutside" className="ml-2 text-sm text-gray-300 font-space-grotesk">
+              Confirm login from outside office
+            </label>
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg font-semibold text-white transition-all duration-300 shadow-md ${
+              loading
+                ? 'bg-secondary/50 cursor-not-allowed'
+                : 'bg-secondary hover:bg-opacity-80'
+            }`}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-400 mt-4 font-share-tech">
+          Don’t have an account?{' '}
+          <Link to="/register" className="text-primary hover:text-opacity-80 font-medium">
+            Register here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

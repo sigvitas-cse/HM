@@ -10,15 +10,14 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id, role }
-    console.log('authMiddleware decoded:', decoded);
+    console.log('authMiddleware decoded:', decoded); // Debug log
+    req.user = { _id: decoded.id, role: decoded.role }; // Map id to _id
     next();
   } catch (error) {
     console.error('authMiddleware error:', error.message, error.stack);
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
-
 
 const roleMiddleware = (roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
