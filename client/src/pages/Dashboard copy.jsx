@@ -1,39 +1,23 @@
 import { useContext, useEffect, useState } from 'react';
-import { useParams, Outlet, Link, useLocation } from 'react-router-dom';
+import { useParams, Outlet, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { FaSpinner } from 'react-icons/fa';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
   const { role, userId } = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
     if (!user || user.role.toLowerCase() !== role || user.employeeId !== userId) {
       toast.error('Unauthorized access or invalid user');
-      setIsLoading(false);
-      return;
     }
-    setIsLoading(false);
   }, [user, role, userId]);
 
   if (!user) {
     return (
       <div className="min-h-screen bg-bg-dark flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="text-white font-space-grotesk animate-pulse">Loading...</div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-bg-dark flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="text-white font-space-grotesk flex items-center">
-          <FaSpinner className="animate-spin mr-2" /> Loading Dashboard...
-        </div>
       </div>
     );
   }
@@ -51,7 +35,7 @@ const Dashboard = () => {
 
       const data = await res.json();
       if (res.ok) {
-        await logout();
+        await logout(); // Clears local storage and context
         toast.success(data.message || 'Logged out successfully');
       } else {
         toast.error(data.message || 'Logout failed');
@@ -62,7 +46,7 @@ const Dashboard = () => {
   };
 
   const handleToggleSidebar = () => {
-    console.log('Toggling sidebar, new state:', !sidebarOpen);
+    console.log('Toggling sidebar, new state:', !sidebarOpen); // Debug log
     setSidebarOpen(!sidebarOpen);
   };
 
@@ -72,35 +56,23 @@ const Dashboard = () => {
     }
   };
 
-  // Check if the current route matches the given path
-  const isActive = (path) => location.pathname === path;
-
   return (
     <div className="min-h-screen bg-bg-dark text-gray-300 flex flex-row font-space-grotesk">
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 w-64 bg-bg-darker bg-opacity-95 backdrop-blur-md z-50 h-screen overflow-y-auto transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
-        onClick={handleCloseSidebar}
+        className="fixed inset-y-0 left-0 w-64 bg-bg-darker bg-opacity-95 backdrop-blur-md z-50 h-screen overflow-y-auto"
+        onClick={handleCloseSidebar} // Close on click outside (sidebar area)
       >
         <div className="p-6 h-full flex flex-col border-r-2">
           <h2 className="text-2xl font-bold text-white mb-6 font-space-grotesk">HRMS Dashboard</h2>
           <nav className="flex-1">
             <ul className="space-y-2">
-              <li>
-                <Link
-                  to={`/${role}/${userId}/dashboard`}
-                  className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
-                  onClick={handleCloseSidebar}
-                >
-                  <span className="ml-2">Dashboard</span>
-                </Link>
-              </li>
               {(user.role === 'Admin' || user.role === 'HR' || user.role === 'Employee') && (
                 <>
                   <li>
                     <Link
                       to={`/${role}/${userId}/dashboard/attendance`}
-                      className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/attendance`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                       onClick={handleCloseSidebar}
                     >
                       <span className="ml-2">Attendance</span>
@@ -109,7 +81,7 @@ const Dashboard = () => {
                   <li>
                     <Link
                       to={`/${role}/${userId}/dashboard/leaves`}
-                      className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/leaves`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                       onClick={handleCloseSidebar}
                     >
                       <span className="ml-2">Leave Management</span>
@@ -118,7 +90,7 @@ const Dashboard = () => {
                   <li>
                     <Link
                       to={`/${role}/${userId}/dashboard/payroll`}
-                      className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/payroll`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                       onClick={handleCloseSidebar}
                     >
                       <span className="ml-2">Payroll</span>
@@ -127,7 +99,7 @@ const Dashboard = () => {
                   <li>
                     <Link
                       to={`/${role}/${userId}/dashboard/notices`}
-                      className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/notices`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                       onClick={handleCloseSidebar}
                     >
                       <span className="ml-2">Notices</span>
@@ -136,7 +108,7 @@ const Dashboard = () => {
                   <li>
                     <Link
                       to={`/${role}/${userId}/dashboard/holidays`}
-                      className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/holidays`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                      className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                       onClick={handleCloseSidebar}
                     >
                       <span className="ml-2">Holidays</span>
@@ -148,7 +120,7 @@ const Dashboard = () => {
                 <li>
                   <Link
                     to={`/${role}/${userId}/dashboard/employees`}
-                    className={`flex items-center p-2 rounded-lg transition-colors ${isActive(`/${role}/${userId}/dashboard/employees`) ? 'bg-primary bg-opacity-30 text-white' : 'hover:bg-primary hover:bg-opacity-20 text-gray-300'}`}
+                    className="flex items-center p-2 rounded-lg hover:bg-primary hover:bg-opacity-20 text-white transition-colors"
                     onClick={handleCloseSidebar}
                   >
                     <span className="ml-2">Employee Management</span>
@@ -169,7 +141,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="flex-1 ml-64 pl-4">
         {/* Header */}
-        <header className="sticky top-0 bg-bg-darker bg-opacity-90 backdrop-blur-md p-4 mx-6 my-0 rounded-b-lg mb-0 flex justify-between items-center border-b-4 z-40">
+        <header className="sticky top-0 bg-bg-darker bg-opacity-90 backdrop-blur-md p-4 mx-6 rounded-b-lg mb-6 flex justify-between items-center border-b-4 z-40">
           <button
             onClick={handleToggleSidebar}
             className="lg:hidden text-primary focus:outline-none"
@@ -190,7 +162,7 @@ const Dashboard = () => {
             </svg>
           </button>
           <div className="text-white font-space-grotesk">
-            <p className="font-semibold text-2xl">Welcome, {user.name}</p>
+            <p className="font-semibold">Welcome, {user.name}</p>
             <p className="text-sm text-gray-400">Role: {user.role}</p>
           </div>
           <button
@@ -203,20 +175,6 @@ const Dashboard = () => {
 
         {/* Content Area */}
         <main className="bg-bg-darker bg-opacity-90 p-0 rounded-lg shadow-lg h-[calc(95vh-64px)]">
-          {isActive(`/${role}/${userId}/dashboard`) && (
-            <div className="text-center">
-              <h1 className="text-5xl font-bold text-white mt-10 mb-6">Welcome to HRMS</h1>
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent opacity-20 blur-md animate-pulse"></div>
-                <p className="text-2xl text-gray-200 relative z-10">
-                  {user.role === 'Employee' && 'Your personalized workspace awaits your exploration.'}
-                  {user.role === 'HR' && 'Take charge of your team’s management with ease.'}
-                  {user.role === 'Admin' && 'Control the system and lead with confidence.'}
-                </p>
-              </div>
-              <p className="text-gray-400 mt-6">Discover more through the sidebar.</p>
-            </div>
-          )}
           <Outlet />
         </main>
       </div>

@@ -1,7 +1,7 @@
-// client/src/pages/admin/EmployeeManagement.jsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaSpinner } from 'react-icons/fa'; // Install react-icons if not already installed
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
@@ -9,6 +9,7 @@ const EmployeeManagement = () => {
     email: '', password: '', name: '', role: 'Employee', employeeId: '', department: '', designation: '', phone: '', address: '',
   });
   const [editingId, setEditingId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -26,17 +27,24 @@ const EmployeeManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
         await axios.put(`http://localhost:5000/api/employees/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Employee updated successfully');
+        toast.success('Employee updated successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       } else {
         await axios.post('http://localhost:5000/api/employees', formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Employee registered successfully');
+        toast.success('Employee registered successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
       setFormData({ email: '', password: '', name: '', role: 'Employee', employeeId: '', department: '', designation: '', phone: '', address: '' });
       setEditingId(null);
@@ -44,8 +52,17 @@ const EmployeeManagement = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setEmployees(res.data);
+      // Add a temporary highlight to the form
+      const form = document.querySelector('form');
+      form.classList.add('bg-green-100', 'border-green-400');
+      setTimeout(() => form.classList.remove('bg-green-100', 'border-green-400'), 2000); // Remove after 2 seconds
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Operation failed');
+      toast.error(error.response?.data?.message || 'Operation failed', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -70,16 +87,22 @@ const EmployeeManagement = () => {
         await axios.delete(`http://localhost:5000/api/employees/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Employee deleted successfully');
+        toast.success('Employee deleted successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
         setEmployees(employees.filter((emp) => emp._id !== id));
       } catch (error) {
-        toast.error('Failed to delete employee');
+        toast.error('Failed to delete employee', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4 text-white">Employee Management</h1>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,8 +194,18 @@ const EmployeeManagement = () => {
             />
           </div>
         </div>
-        <button type="submit" className="mt-4 bg-blue-600 text-white p-2 rounded">
-          {editingId ? 'Update Employee' : 'Register Employee'}
+        <button
+          type="submit"
+          className="mt-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <FaSpinner className="animate-spin mr-2" /> {editingId ? 'Updating...' : 'Registering...'}
+            </>
+          ) : (
+            editingId ? 'Update Employee' : 'Register Employee'
+          )}
         </button>
         {editingId && (
           <button

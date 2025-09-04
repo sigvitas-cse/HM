@@ -1,8 +1,8 @@
+// client/src/pages/Notice.jsx
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
-import { FaSpinner } from 'react-icons/fa'; // Install react-icons if not already installed
 
 const Notice = () => {
   const { user } = useContext(AuthContext);
@@ -10,7 +10,6 @@ const Notice = () => {
   const [formData, setFormData] = useState({ title: '', content: '', targetUsers: [] });
   const [employees, setEmployees] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -41,24 +40,17 @@ const Notice = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
         await axios.put(`http://localhost:5000/api/notices/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Notice updated successfully', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.success('Notice updated successfully');
       } else {
         await axios.post('http://localhost:5000/api/notices', formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Notice posted successfully', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.success('Notice posted successfully');
       }
       setFormData({ title: '', content: '', targetUsers: [] });
       setEditingId(null);
@@ -66,18 +58,8 @@ const Notice = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setNotices(res.data);
-      // Add a temporary highlight to the form
-      const form = document.querySelector('form');
-      form.classList.add('bg-green-100', 'border-green-400');
-      setTimeout(() => form.classList.remove('bg-green-100', 'border-green-400'), 2000); // Remove after 2 seconds
     } catch (error) {
-      console.error('Error in handleSubmit:', error.response?.data, error);
-      toast.error(error.response?.data?.message || 'Operation failed', {
-        position: 'top-right',
-        autoClose: 3000,
-      });
-    } finally {
-      setIsSubmitting(false); // Stop loading
+      toast.error(error.response?.data?.message || 'Operation failed');
     }
   };
 
@@ -96,22 +78,16 @@ const Notice = () => {
         await axios.delete(`http://localhost:5000/api/notices/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Notice deleted successfully', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.success('Notice deleted successfully');
         setNotices(notices.filter((notice) => notice._id !== id));
       } catch (error) {
-        toast.error('Failed to delete notice', {
-          position: 'top-right',
-          autoClose: 3000,
-        });
+        toast.error('Failed to delete notice');
       }
     }
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4 text-white">Notice Board</h1>
       {(user.role === 'Admin' || user.role === 'HR') && (
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
@@ -156,18 +132,8 @@ const Notice = () => {
               </select>
             </div>
           </div>
-          <button
-            type="submit"
-            className="mt-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <FaSpinner className="animate-spin mr-2" /> {editingId ? 'Updating...' : 'Posting...'}
-              </>
-            ) : (
-              editingId ? 'Update Notice' : 'Post Notice'
-            )}
+          <button type="submit" className="mt-4 bg-blue-600 text-white p-2 rounded">
+            {editingId ? 'Update Notice' : 'Post Notice'}
           </button>
           {editingId && (
             <button
@@ -187,11 +153,10 @@ const Notice = () => {
       <div className="bg-white p-4 rounded shadow">
         {notices.map((notice) => (
           <div key={notice._id} className="border-b p-4">
-            <h3 className="text-xl font-semibold text-gray-600">{notice.title}</h3>
+            <h3 className="text-xl font-semibold">{notice.title}</h3>
             <p className="text-gray-600">{notice.content}</p>
             <p className="text-sm text-gray-500">
-              Posted by {notice.createdBy?.name || 'Unknown'} on{' '}
-              {new Date(notice.postedAt).toLocaleDateString()}
+              Posted by {notice.postedBy.name} on {new Date(notice.postedAt).toLocaleDateString()}
             </p>
             {(user.role === 'Admin' || user.role === 'HR') && (
               <div className="mt-2">

@@ -1,11 +1,12 @@
-// client/src/pages/Payroll.jsx
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../context/AuthContext';
+import { FaSpinner } from 'react-icons/fa'; // Install react-icons if not already installed
 
 const Payroll = () => {
   const { user } = useContext(AuthContext);
+  console.log('Current user from AuthContext:', user); // Debug log
   const [payrolls, setPayrolls] = useState([]);
   const [formData, setFormData] = useState({
     userId: '',
@@ -15,6 +16,7 @@ const Payroll = () => {
   });
   const [employees, setEmployees] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   useEffect(() => {
     const fetchPayrolls = async () => {
@@ -22,6 +24,7 @@ const Payroll = () => {
         const res = await axios.get('http://localhost:5000/api/payroll', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+        console.log('API response for payrolls:', res.data); // Debug log
         setPayrolls(res.data);
       } catch (error) {
         toast.error('Failed to fetch payrolls');
@@ -45,26 +48,43 @@ const Payroll = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
         await axios.put(`http://localhost:5000/api/payroll/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Payroll updated successfully');
+        toast.success('Payroll updated successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       } else {
         await axios.post('http://localhost:5000/api/payroll', formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Payroll created successfully');
+        toast.success('Payroll created successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
       setFormData({ userId: '', salary: '', deductions: '', paymentDate: '' });
       setEditingId(null);
       const res = await axios.get('http://localhost:5000/api/payroll', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
+      console.log('API response after submit:', res.data); // Debug log
       setPayrolls(res.data);
+      // Add a temporary highlight to the form
+      const form = document.querySelector('form');
+      form.classList.add('bg-green-100', 'border-green-400');
+      setTimeout(() => form.classList.remove('bg-green-100', 'border-green-400'), 2000); // Remove after 2 seconds
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Operation failed');
+      toast.error(error.response?.data?.message || 'Operation failed', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -72,7 +92,7 @@ const Payroll = () => {
     setEditingId(payroll._id);
     setFormData({
       userId: payroll.userId._id,
-      salary: payroll.salary,
+      salary: payroll.baseSalary,
       deductions: payroll.deductions,
       paymentDate: new Date(payroll.paymentDate).toISOString().split('T')[0],
     });
@@ -84,16 +104,22 @@ const Payroll = () => {
         await axios.delete(`http://localhost:5000/api/payroll/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        toast.success('Payroll deleted successfully');
+        toast.success('Payroll deleted successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
         setPayrolls(payrolls.filter((payroll) => payroll._id !== id));
       } catch (error) {
-        toast.error('Failed to delete payroll');
+        toast.error('Failed to delete payroll', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
       }
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4 text-white">Payroll Management</h1>
       {(user.role === 'Admin' || user.role === 'HR') && (
         <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6">
@@ -144,8 +170,18 @@ const Payroll = () => {
               />
             </div>
           </div>
-          <button type="submit" className="mt-4 bg-blue-600 text-white p-2 rounded">
-            {editingId ? 'Update Payroll' : 'Create Payroll'}
+          <button
+            type="submit"
+            className="mt-4 bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" /> {editingId ? 'Updating...' : 'Creating...'}
+              </>
+            ) : (
+              editingId ? 'Update Payroll' : 'Create Payroll'
+            )}
           </button>
           {editingId && (
             <button
@@ -169,7 +205,7 @@ const Payroll = () => {
               <th className="p-2 text-left">Employee</th>
               <th className="p-2 text-left">Salary</th>
               <th className="p-2 text-left">Deductions</th>
-              <th className="p-2 text-left">Net Pay</th>
+              <th className="p-2 text-left">Net Salary</th>
               <th className="p-2 text-left">Payment Date</th>
               <th className="p-2 text-left">Status</th>
               {(user.role === 'Admin' || user.role === 'HR') && <th className="p-2 text-left">Actions</th>}
@@ -179,9 +215,9 @@ const Payroll = () => {
             {payrolls.map((payroll) => (
               <tr key={payroll._id} className="border-b">
                 <td className="p-2">{payroll.userId.name}</td>
-                <td className="p-2">${payroll.salary}</td>
-                <td className="p-2">${payroll.deductions}</td>
-                <td className="p-2">${payroll.netPay}</td>
+                <td className="p-2">₹{payroll.baseSalary}</td>
+                <td className="p-2">₹{payroll.deductions}</td>
+                <td className="p-2">₹{payroll.netSalary}</td>
                 <td className="p-2">{new Date(payroll.paymentDate).toLocaleDateString()}</td>
                 <td className="p-2">{payroll.status}</td>
                 {(user.role === 'Admin' || user.role === 'HR') && (

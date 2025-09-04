@@ -65,15 +65,23 @@ const AppRoutes = () => (
           </ProtectedRoute>
         }
       />
+      <Route
+        path="employees"
+        element={
+          <ProtectedRoute role="Admin">
+            <EmployeeManagement />
+          </ProtectedRoute>
+        }
+      />
     </Route>
-    <Route
+    {/* <Route
       path="/admin/employees"
       element={
         <ProtectedRoute role="Admin">
           <EmployeeManagement />
         </ProtectedRoute>
       }
-    />
+    /> */}
     {/* Fallback route for invalid URLs */}
     <Route path="*" element={<Home />} />
   </Routes>

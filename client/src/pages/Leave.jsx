@@ -1,8 +1,8 @@
-// client/src/pages/Leave.jsx
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { FaSpinner } from 'react-icons/fa'; // Import a spinner icon (install react-icons if needed)
 
 const Leave = () => {
   const { user } = useContext(AuthContext);
@@ -10,6 +10,7 @@ const Leave = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reason, setReason] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   useEffect(() => {
     const fetchLeaves = async () => {
@@ -29,13 +30,17 @@ const Leave = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Start loading
     try {
       await axios.post(
-        'http://localhost:5000/api/leaves',
+        'http://localhost:5000/api/leaves/apply',
         { startDate, endDate, reason },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
-      toast.success('Leave applied successfully');
+      toast.success('Leave applied successfully', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
       setStartDate('');
       setEndDate('');
       setReason('');
@@ -43,13 +48,22 @@ const Leave = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setLeaves(res.data);
+      // Add a temporary highlight to the form
+      const form = document.querySelector('form');
+      form.classList.add('bg-green-100', 'border-green-400');
+      setTimeout(() => form.classList.remove('bg-green-100', 'border-green-400'), 2000); // Remove after 2 seconds
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to apply leave');
+      toast.error(error.response?.data?.message || 'Failed to apply leave', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4 text-white">Leave Management</h2>
       <div className="bg-white p-6 rounded shadow-md mb-6">
         <h3 className="text-lg font-semibold mb-2 text-gray-800">Apply for Leave</h3>
@@ -83,19 +97,30 @@ const Leave = () => {
               required
             />
           </div>
-          <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-            Apply
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 flex items-center justify-center"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <FaSpinner className="animate-spin mr-2" /> Applying...
+              </>
+            ) : (
+              'Apply'
+            )}
           </button>
         </form>
       </div>
       <div className="bg-white p-6 rounded shadow-md">
         <h3 className="text-lg font-semibold mb-2 text-gray-800">Leave History</h3>
         {leaves.length === 0 ? (
-          <p className='text-gray-600'>No leave records found.</p>
+          <p className="text-gray-600">No leave records found.</p>
         ) : (
           <table className="w-full border-collapse">
             <thead>
-                <tr className="bg-gray-100 text-gray-700">
+              <tr className="bg-gray-100 text-gray-700">
+                <th className="border p-2">Name</th>
                 <th className="border p-2">Start Date</th>
                 <th className="border p-2">End Date</th>
                 <th className="border p-2">Reason</th>
@@ -104,7 +129,8 @@ const Leave = () => {
             </thead>
             <tbody>
               {leaves.map((leave) => (
-                <tr key={leave._id}>
+                <tr key={leave._id} className='text-gray-700'>
+                  <td className="border p-2">{leave.userId.name}</td>
                   <td className="border p-2">{new Date(leave.startDate).toLocaleDateString()}</td>
                   <td className="border p-2">{new Date(leave.endDate).toLocaleDateString()}</td>
                   <td className="border p-2">{leave.reason}</td>

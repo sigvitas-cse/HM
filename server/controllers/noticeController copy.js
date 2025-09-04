@@ -1,35 +1,25 @@
+// server/controllers/noticeController.js
 const Notice = require('../models/Notice');
 const { sendEmail } = require('../utils/email');
 const User = require('../models/User');
 
 const createNotice = async (req, res) => {
-  const { title, content, targetUsers } = req.body;
-  console.log('Creating notice with data:', { title, content, targetUsers });
-  console.log('Authenticated user:', req.user);
+  const { title, content } = req.body;
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(400).json({ message: 'User authentication data missing' });
-    }
     const notice = await Notice.create({
       title,
       content,
       createdBy: req.user._id,
-      targetUsers: targetUsers || [],
     });
-    console.log('Notice created:', notice._id);
-    const users = await User.find(targetUsers && targetUsers.length ? { _id: { $in: targetUsers } } : {});
-    console.log('Notifying users:', users.map((u) => u.email));
+    // Notify all users via email
+    const users = await User.find({});
     const emailPromises = users.map((user) =>
       sendEmail(user.email, `New Notice: ${title}`, content)
     );
-    await Promise.all(emailPromises).catch((emailError) => {
-      console.warn('Email notification failed:', emailError.message);
-    });
-    console.log('Emails sent or skipped');
+    await Promise.all(emailPromises);
     res.status(201).json({ message: 'Notice created', notice });
   } catch (error) {
-    console.error('Error in createNotice:', error.message, error.stack);
-    res.status(500).json({ message: 'Failed to create notice', error: error.message });
+    res.status(500).json({ message: 'Failed to create notice' });
   }
 };
 
@@ -40,9 +30,6 @@ const updateNotice = async (req, res) => {
     const notice = await Notice.findById(id);
     if (!notice) {
       return res.status(404).json({ message: 'Notice not found' });
-    }
-    if (notice.createdBy.toString() !== req.user._id && !['Admin', 'HR'].includes(req.user.role)) {
-      return res.status(403).json({ message: 'Unauthorized to update this notice' });
     }
     notice.title = title || notice.title;
     notice.content = content || notice.content;
@@ -57,14 +44,10 @@ const updateNotice = async (req, res) => {
 const deleteNotice = async (req, res) => {
   const { id } = req.params;
   try {
-    const notice = await Notice.findById(id);
+    const notice = await Notice.findByIdAndDelete(id);
     if (!notice) {
       return res.status(404).json({ message: 'Notice not found' });
     }
-    if (notice.createdBy.toString() !== req.user._id && !['Admin', 'HR'].includes(req.user.role)) {
-      return res.status(403).json({ message: 'Unauthorized to delete this notice' });
-    }
-    await Notice.findByIdAndDelete(id);
     res.json({ message: 'Notice deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete notice' });
@@ -74,8 +57,8 @@ const deleteNotice = async (req, res) => {
 const getNotices = async (req, res) => {
   try {
     const notices = await Notice.find({})
-      .sort({ postedAt: -1 })
-      .populate('createdBy', 'name email'); // Corrected to match schema
+      .sort({ createdAt: -1 })
+      .populate('createdBy', 'name email');
     res.json(notices);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch notices' });

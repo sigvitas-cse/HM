@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) {
     return res.status(401).json({ message: 'No token, authorization denied' });
@@ -10,20 +10,11 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('authMiddleware decoded:', decoded); // Debug log
-    if (!decoded.id) {
-      throw new Error('Invalid token payload: missing id');
+    // Validate decoded object
+    if (!decoded.id || !decoded.role) {
+      throw new Error('Invalid token payload: missing id or role');
     }
-    // Fetch user from database
-    const user = await User.findById(decoded.id).select('role');
-    if (!user) {
-      throw new Error('User not found');
-    }
-    if (!user.role) {
-      console.warn(`User ${decoded.id} has no role, defaulting to 'Employee'`);
-      user.role = 'Employee'; // Default to Employee if missing
-      await user.save();
-    }
-    req.user = { _id: user._id, role: user.role };
+    req.user = { _id: decoded.id, role: decoded.role }; // Map id to _id
     console.log('Authenticated user set:', req.user); // Debug log
     next();
   } catch (error) {
@@ -33,7 +24,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 const roleMiddleware = (roles) => (req, res, next) => {
-  console.log('Checking role for user:', req.user);
+  console.log('Checking role for user:', req.user); // Debug log
   if (!req.user || !req.user.role || !roles.includes(req.user.role)) {
     return res.status(403).json({ message: 'Access denied', userRole: req.user?.role });
   }
