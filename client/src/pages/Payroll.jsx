@@ -18,10 +18,12 @@ const Payroll = () => {
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchPayrolls = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/payroll', {
+        const res = await axios.get(`${API_URL}/api/payroll`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         console.log('API response for payrolls:', res.data); // Debug log
@@ -33,7 +35,7 @@ const Payroll = () => {
     const fetchEmployees = async () => {
       if (user.role === 'Admin' || user.role === 'HR') {
         try {
-          const res = await axios.get('http://localhost:5000/api/employees', {
+          const res = await axios.get(`${API_URL}/api/employees`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setEmployees(res.data);
@@ -51,7 +53,7 @@ const Payroll = () => {
     setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/payroll/${editingId}`, formData, {
+        await axios.put(`${API_URL}/api/payroll/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Payroll updated successfully', {
@@ -59,7 +61,7 @@ const Payroll = () => {
           autoClose: 3000,
         });
       } else {
-        await axios.post('http://localhost:5000/api/payroll', formData, {
+        await axios.post(`${API_URL}/api/payroll`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Payroll created successfully', {
@@ -69,7 +71,7 @@ const Payroll = () => {
       }
       setFormData({ userId: '', salary: '', deductions: '', paymentDate: '' });
       setEditingId(null);
-      const res = await axios.get('http://localhost:5000/api/payroll', {
+      const res = await axios.get(`${API_URL}/api/payroll`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       console.log('API response after submit:', res.data); // Debug log
@@ -101,7 +103,7 @@ const Payroll = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this payroll?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/payroll/${id}`, {
+        await axios.delete(`${API_URL}/api/payroll/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Payroll deleted successfully', {

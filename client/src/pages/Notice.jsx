@@ -12,13 +12,17 @@ const Notice = () => {
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
+  const API_URL = import.meta.env.VITE_API_URL;
+  // console.log("API URL:", API_URL); // debug
+
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/notices', {
+        const res = await axios.get(`${API_URL}/api/notices`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
-        setNotices(res.data);
+        console.log("Notices response:", res.data);
+        setNotices(res.data   || []);
       } catch (error) {
         toast.error('Failed to fetch notices');
       }
@@ -26,7 +30,7 @@ const Notice = () => {
     const fetchEmployees = async () => {
       if (user.role === 'Admin' || user.role === 'HR') {
         try {
-          const res = await axios.get('http://localhost:5000/api/employees', {
+          const res = await axios.get(`${API_URL}/api/employees`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setEmployees(res.data);
@@ -44,7 +48,7 @@ const Notice = () => {
     setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/notices/${editingId}`, formData, {
+        await axios.put(`${API_URL}/api/notices/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Notice updated successfully', {
@@ -52,7 +56,7 @@ const Notice = () => {
           autoClose: 3000,
         });
       } else {
-        await axios.post('http://localhost:5000/api/notices', formData, {
+        await axios.post(`${API_URL}/api/notices`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Notice posted successfully', {
@@ -62,7 +66,7 @@ const Notice = () => {
       }
       setFormData({ title: '', content: '', targetUsers: [] });
       setEditingId(null);
-      const res = await axios.get('http://localhost:5000/api/notices', {
+      const res = await axios.get(`${API_URL}/api/notices`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setNotices(res.data);
@@ -93,7 +97,7 @@ const Notice = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this notice?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/notices/${id}`, {
+        await axios.delete(`${API_URL}/api/notices/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Notice deleted successfully', {

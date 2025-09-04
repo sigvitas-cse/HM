@@ -11,10 +11,12 @@ const EmployeeManagement = () => {
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/employees', {
+        const res = await axios.get(`${API_URL}/api/employees`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setEmployees(res.data);
@@ -30,7 +32,7 @@ const EmployeeManagement = () => {
     setIsSubmitting(true); // Start loading
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/employees/${editingId}`, formData, {
+        await axios.put(`${API_URL}/api/employees/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Employee updated successfully', {
@@ -38,7 +40,7 @@ const EmployeeManagement = () => {
           autoClose: 3000,
         });
       } else {
-        await axios.post('http://localhost:5000/api/employees', formData, {
+        await axios.post(`${API_URL}/api/employees`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Employee registered successfully', {
@@ -48,7 +50,7 @@ const EmployeeManagement = () => {
       }
       setFormData({ email: '', password: '', name: '', role: 'Employee', employeeId: '', department: '', designation: '', phone: '', address: '' });
       setEditingId(null);
-      const res = await axios.get('http://localhost:5000/api/employees', {
+      const res = await axios.get(`${API_URL}/api/employees`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setEmployees(res.data);
@@ -84,7 +86,7 @@ const EmployeeManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/employees/${id}`, {
+        await axios.delete(`${API_URL}/api/employees/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Employee deleted successfully', {

@@ -10,10 +10,12 @@ const Holiday = () => {
   const [formData, setFormData] = useState({ name: '', date: '', description: '' });
   const [editingId, setEditingId] = useState(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchHolidays = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/holidays', {
+        const res = await axios.get(`${API_URL}/api/holidays`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setHolidays(res.data);
@@ -28,19 +30,19 @@ const Holiday = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/holidays/${editingId}`, formData, {
+        await axios.put(`${API_URL}/api/holidays/${editingId}`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Holiday updated successfully');
       } else {
-        await axios.post('http://localhost:5000/api/holidays', formData, {
+        await axios.post(`${API_URL}/api/holidays`, formData, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Holiday added successfully');
       }
       setFormData({ name: '', date: '', description: '' });
       setEditingId(null);
-      const res = await axios.get('http://localhost:5000/api/holidays', {
+      const res = await axios.get(`${API_URL}/api/holidays`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setHolidays(res.data);
@@ -61,7 +63,7 @@ const Holiday = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this holiday?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/holidays/${id}`, {
+        await axios.delete(`${API_URL}/api/holidays/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         toast.success('Holiday deleted successfully');

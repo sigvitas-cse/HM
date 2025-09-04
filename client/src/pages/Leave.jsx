@@ -12,10 +12,12 @@ const Leave = () => {
   const [reason, setReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchLeaves = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/leaves', {
+        const res = await axios.get(`${API_URL}/api/leaves`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setLeaves(res.data);
@@ -33,7 +35,7 @@ const Leave = () => {
     setIsSubmitting(true); // Start loading
     try {
       await axios.post(
-        'http://localhost:5000/api/leaves/apply',
+        `${API_URL}/api/leaves/apply`,
         { startDate, endDate, reason },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
@@ -44,7 +46,7 @@ const Leave = () => {
       setStartDate('');
       setEndDate('');
       setReason('');
-      const res = await axios.get('http://localhost:5000/api/leaves', {
+      const res = await axios.get(`${API_URL}/api/leaves`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       setLeaves(res.data);

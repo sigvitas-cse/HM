@@ -38,10 +38,12 @@ const Dashboard = () => {
     );
   }
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/auth/logout', {
+      const res = await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
